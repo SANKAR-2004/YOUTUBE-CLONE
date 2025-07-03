@@ -1,0 +1,200 @@
+import { useDispatch } from "react-redux";
+import { toggleNavbar } from "../Redux Store/SideBarSlice";
+import SideBar from "./SideBar.js";
+import { useEffect, useState } from "react";
+import jsonp from "jsonp";
+import { SEARCH_SUGGESTION_API } from "../constants.js";
+import { addWords } from "../Redux Store/SearchSlice.js";
+import { useSelector } from "react-redux";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { changeMode } from "../Redux Store/DarkModeSlice.js";
+
+
+const Header = () => {
+
+  const [searchText, setSearchText] = useState("");
+  const [suggestionData, setSuggestionData] = useState([]);
+  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [searchParams,setSearchParams] = useSearchParams("");
+  const SearchCache2 = useSelector((store) => { return store.search });
+  const darkmode = useSelector((store) => {
+    return store.colorMode.darkMode;
+  });
+  const navigate = useNavigate();
+ 
+  //const urlKeyword = searchParams.get("k");
+ 
+  /*
+  {
+    i:["iphone","iphone 12","iphone status"]
+    vij:["vijay","vijay movies","vijay songs"]
+  }
+  */
+
+    const dispatch = useDispatch();
+    function handleClick() {
+        dispatch(toggleNavbar());
+   }
+   
+  function getSuggestion() {
+    jsonp(
+      SEARCH_SUGGESTION_API+searchText,
+      null,
+      (err, data) => {
+        if (err) {
+          console.error("Error:", err);
+        } else {
+          console.log(data[1]);
+          setSuggestionData(data[1]);
+          dispatch(addWords({
+            [searchText]: data[1],
+          }));
+        //  data[1].map((item, index) => { console.log(item[0]); })
+        }
+      }
+    );
+  }
+
+  function handleSuggestionClick(t) {
+    setSearchText(t);
+    setShowSuggestion(false);
+    navigate("/search?k=" + t);
+  }
+
+  function handleBlur() {
+    setTimeout(() => {
+      setShowSuggestion(false);
+    }, 300);
+  }
+  //UseEffect for url and textbox sync
+  useEffect(() => {
+    if (searchParams.get("k") !== null) {
+      setSearchText(searchParams.get("k"));
+   }
+  }, [searchParams]);
+
+
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+      if (SearchCache2[searchText]) {
+        setSuggestionData(SearchCache2[searchText]);
+      } else {
+        getSuggestion();
+      }
+  
+    }, 200);
+    
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [searchText]);
+
+    return (
+      <div
+        className={` sticky top-0 z-10 ${
+          darkmode == true
+            ? "bg-gray-800 border-b-2 border-white/30"
+            : "bg-white"
+        }`}
+      >
+        <div className="flex justify-between shadow-2xl ">
+          <div className="flex p-2.5 shadow-2xl items-center">
+            <img
+              className="w-10 h-8 cursor-pointer mx-2"
+              alt="Navigation Bar"
+              onClick={handleClick}
+              src="https://53.fs1.hubspotusercontent-na1.net/hub/53/hubfs/What%20is%20a%20Hamburger%20Button.png?width=225&name=What%20is%20a%20Hamburger%20Button.png"
+            />
+            <img
+              className="w-24"
+              alt="Youtube-Logo"
+              src="https://m.media-amazon.com/images/I/51ErMCb4szL.jpg"
+            />
+          </div>
+
+          <div className="flex flex-col items-center justify-center w-6/12">
+            <div className="flex w-[500px]">
+              <input
+                type="text"
+                className={`border-gray-300 rounded-l-full outline-0 px-6 w-full h-11 border-1 ${
+                  darkmode
+                    ? "bg-gray-700 border-gray-500 text-white"
+                    : "bg-gray-100"
+                }`}
+                placeholder="Type to Search"
+                value={searchText}
+                onFocus={() => {
+                  setShowSuggestion(true);
+                }}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setSearchText(e.target.value);
+                }}
+              />
+              <Link to={"/search?k=" + searchText}>
+                <button
+                  className={`border-gray-400 rounded-r-full cursor-pointer h-11 px-3 ${
+                    darkmode
+                      ? "bg-gray-700 border-gray-400 text-white"
+                      : "bg-gray-100"
+                  }`}
+                >
+                  🔍
+                </button>
+              </Link>
+            </div>
+            {searchText && showSuggestion && (
+              <div className="flex w-full z-50 px-4 mt-1 justify-center">
+                <ul
+                  className={`fixed z-50 w-[480px] rounded-lg ${
+                    (darkmode)
+                      ? "bg-gray-700  text-white"
+                      : "bg-gray-100 text-black"
+                  }`}
+                >
+                  {suggestionData.map((item, index) => {
+                    if (index >= 10) return;
+                    return (
+                      <li
+                        onClick={() => {
+                          handleSuggestionClick(item[0]);
+                        }}
+                        key={item[0]}
+                        className={`py-3 px-3 rounded-lg border-b-gray-200 hover:bg-gray-200 cursor-default border-b-2 ${(darkmode) && " hover:bg-gray-200 hover:text-black"}`}
+                      >
+                        🔍 {item[0]}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center p-3 m-3">
+            <span
+              className="text-2xl mr-4 cursor-pointer"
+              onClick={() => {
+                dispatch(changeMode());
+              }}
+            >
+              {darkmode == true ? "🌙" : "☀️"}
+            </span>
+            <img
+              alt="Notification"
+              className="w-7 cursor-pointer mx-3 "
+              src="https://cdn-icons-png.flaticon.com/512/3119/3119338.png"
+            />
+            <img
+              alt="person-icon"
+              className="w-7 cursor-pointer mx-3"
+              src="https://static.vecteezy.com/system/resources/thumbnails/028/569/170/small_2x/single-man-icon-people-icon-user-profile-symbol-person-symbol-businessman-stock-vector.jpg"
+            />
+          </div>
+        </div>
+      </div>
+    );
+}
+
+export default Header;
