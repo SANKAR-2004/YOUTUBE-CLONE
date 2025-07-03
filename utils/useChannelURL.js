@@ -9,7 +9,7 @@ const useChannelURL = (channelId) => {
                 const channelImg = await channeldata.json();
                 setChannelImgObj(channelImg.items[0].snippet.thumbnails.default.url);
            //  console.log(channelImg);
-    }
+    } 
     useEffect(() => {
         if (channelId) {
             getChannelDetail();

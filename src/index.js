@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import AppStore from "../Redux Store/store";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router";
-import WatchPage from "./WatchPage";
+import WatchPage from "./WatchPage"; 
 import VideoContainer from "./VideoContainer";
 import MainContainer from "./MainContainer";
 import SearchPage from "./SearchPage";
