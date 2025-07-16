@@ -11,10 +11,11 @@ const LiveChat = ({ name, msg }) => {
           darkmode ? "bg-gray-700 text-white shadow-white/10" : "bg-gray-100"
         }`}
       >
-        <h2 className="font-bold">
-          {name} <span className="text-sm">{"☑️"}</span>
+        <h2 className="font-bold text-sm md:text-base">
+          {name} <span className="text-sm">{"☑️ "}</span>
+          <span className="font-normal md:text-base">{msg}</span>
         </h2>
-        <span>{msg}</span>
+       
       </div>
     );
 }

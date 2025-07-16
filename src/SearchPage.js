@@ -3,6 +3,7 @@ import SearchCard from "./SearchCard";
 import { useState,useEffect } from "react";
 import { SEARCHBAR_API } from "../constants";
 import { useSelector } from "react-redux";
+import RelatedVideoCard from "./RelatedVideoCard";
 
 const SearchPage = () => {
     const [searchParams] = useSearchParams();
@@ -29,15 +30,27 @@ const SearchPage = () => {
     if (videos.length == 0) return null;
     
     return (
-      <div
-        className={`w-8/12 flex flex-col rounded-lg shadow-lg mt-6 justify-center mx-auto ${
-          darkmode ? "bg-gray-700 text-white" : "bg-gray-50"
-        }`}
-      >
-        {videos.map((video) => {
-          return <SearchCard key={video.id.videoId} {...video} />;
-        })}
-      </div>
+      <>
+        <div
+          className={`hidden md:flex  w-8/12  flex-col rounded-lg shadow-lg mt-6 justify-center md:mx-auto ${
+            darkmode ? "bg-gray-700 text-white" : "bg-gray-50"
+          }`}
+        >
+          {videos.map((video) => {
+            return <SearchCard key={video.id.videoId} {...video} />;
+          })}
+        </div>
+
+        <div
+          className={` md:hidden w-8/12 flex flex-col rounded-lg shadow-lg mt-6 justify-center md:mx-auto ${
+            darkmode ? "bg-gray-700 text-white" : "bg-gray-50"
+          }`}
+        >
+          {videos.map((video) => {
+            return <RelatedVideoCard note={"search"} key={video.id.videoId} {...video} />;
+          })}
+        </div>
+      </>
     );
 }
 

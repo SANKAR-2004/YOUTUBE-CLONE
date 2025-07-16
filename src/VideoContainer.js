@@ -1,17 +1,23 @@
 import { useEffect,useState } from "react";
 import { YOUTUBE_API } from "../constants";
 import VideoCard from "./VideoCard";
+import { useDispatch, useSelector } from "react-redux";
+import { addData } from "../Redux Store/VideoDataSlice";
 
 const VideoContainer = () => {
-    
-    const [videoData, setVideoData] = useState([]);
+   
+  const dispatch = useDispatch();
+  const videos = useSelector((store) => {
+    return store.videos.videos;
+  })
 
     async function getVideos() {
       try {
         const data = await fetch(YOUTUBE_API);
         const json_data = await data.json();
         console.log(json_data);
-        setVideoData(json_data.items);
+       // setVideoData(json_data.items);
+        dispatch(addData(json_data.items));
       }
       catch(Exception) {
         console.log("Error in API Data");
@@ -22,14 +28,14 @@ const VideoContainer = () => {
         getVideos();
     }, []);
 
-    if (videoData?.length == 0) return null;
-   
+  //  if (videoData?.length == 0) return null;
+     if (videos.length === 0) return null;
     
-    return <div className="flex flex-wrap justify-center">
+    return <div className="flex w-screen flex-wrap justify-center">
 
-        {videoData.map((video) => {
+        {videos.map((video) => {
             return (
-              <div className="m-2" key={video.id}>
+              <div className="m-2" key={video.etag}>
                 <VideoCard {...video} />
               </div>
             );

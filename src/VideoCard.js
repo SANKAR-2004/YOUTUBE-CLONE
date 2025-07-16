@@ -7,18 +7,25 @@ import { useSelector } from "react-redux";
 const VideoCard = ({contentDetails,snippet,statistics,id}) => {
    
     const [channelImgObj, setChannelImgObj] = useState("");
-    const { channelId, channelTitle, description } = snippet;
-    const { title } = snippet?.localized;
-    const { url } = snippet?.thumbnails?.maxres;
-  const { duration } = contentDetails;
+    const { channelId, channelTitle, description,title } = snippet;
+ // const { title } = snippet?.localized;
+    const { url } = (snippet?.thumbnails?.maxres)
+      ? snippet?.thumbnails?.maxres
+      : snippet?.thumbnails?.medium;
+ // const { duration } = contentDetails;
   const darkmode = useSelector((store) => {
     return store.colorMode.darkMode;
   });
     
-  const timeTxt = useTimer(duration);
+  if (id.videoId) { id = id.videoId };
   
-
-    const { viewCount, likeCount, commentCount } = statistics;
+  let viewCount,duration;
+  if (contentDetails && statistics) {
+    viewCount = statistics.viewCount;
+    duration = contentDetails.duration;
+  }
+  const timeTxt = useTimer(duration);
+   // const { viewCount, likeCount, commentCount } = statistics;
 
     async function getChannelDetail() {
             const channeldata = await fetch(CHANNEL_IMAGE_URL + channelId);
@@ -41,7 +48,7 @@ const VideoCard = ({contentDetails,snippet,statistics,id}) => {
             className="rounded-2xl self-center h-8/12 w-full"
             alt="thumbnail"
           />
-          <span className="absolute top-[178px] rounded-lg text-xs right-0 bg-[rgb(0,0,0)]/65 text-white py-1 px-2">
+          <span className="absolute top-[190px] rounded-lg text-xs right-0 bg-[rgb(0,0,0)]/65 text-white py-1 px-2">
             {timeTxt}
           </span>
 

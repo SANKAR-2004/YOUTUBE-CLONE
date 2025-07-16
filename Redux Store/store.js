@@ -3,6 +3,7 @@ import SideBarSlice from "./SideBarSlice";
 import SearchSlice from "./SearchSlice";
 import ChatSlice from "./ChatSlice";
 import DarkModeSlice from "./DarkModeSlice";
+import VideoDataSlice from "./VideoDataSlice";
  
 
 const AppStore = configureStore({
@@ -11,6 +12,7 @@ const AppStore = configureStore({
         search: SearchSlice,
         LiveChat: ChatSlice,
         colorMode: DarkModeSlice,
+        videos:VideoDataSlice
  }
 });
 

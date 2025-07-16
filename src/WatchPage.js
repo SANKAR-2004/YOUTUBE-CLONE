@@ -9,9 +9,8 @@ import ChatContainer from "./ChatContainer";
 import { useSelector } from "react-redux";
 
 const WatchPage = () => {
-   
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const [videoData, setVideoData] = useState({});
   const Id = searchParams.get("v");
   const channelId = searchParams.get("channelId");
@@ -22,78 +21,76 @@ const WatchPage = () => {
   });
   //console.log(channelUrl);
   //const { channelId, channelTitle, title, description,tags } = useVideoDetails(Id);
-  
-      async function getvideoDetails() {
-          const data = await fetch(VIDEO_DETAILS_API + Id);
-          const json = await data.json();
-        setVideoData({ ...json.items[0].snippet });
-          console.log(videoData);
-      }
 
-      useEffect(() => {
-        getvideoDetails();
-      }, [Id]);
-      
-  
+  async function getvideoDetails() {
+    const data = await fetch(VIDEO_DETAILS_API + Id);
+    const json = await data.json();
+    setVideoData({ ...json.items[0].snippet });
+    console.log(videoData);
+  }
 
-  const VideoId = "https://www.youtube.com/embed/" + Id;
-  
-   if (Object.keys(videoData).length === 0) return null;
+  useEffect(() => {
+    getvideoDetails();
+  }, [Id]);
+
+  const VideoId =
+    "https://www.youtube.com/embed/" +
+    Id +
+    "?autoplay=1";
+  //?autoplay=1&controls=0&rel=0&modestbranding=1"
+
+  if (Object.keys(videoData).length === 0) return null;
   // if (!videoData.channelId) { return null; }
-    return (
-      <div className={`flex py-6 px-24 ${(darkmode) && "bg-gray-700 text-white"}`}>
-        <div className="w-8/12">
-          <iframe
-            className="w-full h-[470px]"
-            src={VideoId}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
+  return (
+    <div className={`flex flex-col items-center md:items-start md:px-24 md:flex-row py-6 ${darkmode && "bg-gray-700 text-white"}`}>
+      <div className="w-11/12 md:w-8/12">
+        <iframe
+          className="w-full h-80 md:h-[470px]"
+          src={VideoId}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        ></iframe>
 
-          {
-            <div>
-              <p className="font-bold text-xl px-2 my-1">{videoData.title}</p>
-              <div className="flex justify-between gap-x-2 items-center">
-                <div className="flex items-center gap-x-1.5">
-                  {CURL && (
-                    <img className="w-12 h-12 rounded-full" src={CURL} />
-                  )}
-                  <span className="w-96">
-                    {videoData.channelTitle}
-                  </span>
-                </div>
-                <div className="">
-                  <span className="px-3 py-2 mr-10 rounded-full bg-green-400">
-                    🧡 52 Likes
-                  </span>
-                </div>
+        {
+          <div>
+            <p className="font-bold text-xl px-2 my-1">{videoData.title}</p>
+            <div className="flex justify-between gap-x-2 items-center">
+              <div className="flex items-center gap-x-1.5">
+                {CURL && <img className="w-12 h-12 rounded-full" src={CURL} />}
+                <span className="w-96">{videoData.channelTitle}</span>
               </div>
-            </div> 
-          }
-          <div className="w-full py-2">
-            <ChatContainer/>
-           </div>
+              <div className="hidden md:block">
+                <span className="px-3 py-2 mr-10 rounded-full bg-green-400">
+                  🧡 52 Likes
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+        <div className="w-full py-2">
+          <ChatContainer />
+        </div>
+        <div className="hidden md:block">
           <CommentsContainer videoid={Id} />
         </div>
-
-        {videoData.tags && (
-          <div className="w-4/12">
-            <RelatedVideoContainer
-              tag={
-                videoData.tags[
-                  Math.floor(Math.random() * videoData.tags.length)
-                ]
-              }
-              videoId={Id}
-              channelId={videoData.channelId}
-            />
-          </div>
-        )}
       </div>
-    );
+
+      {videoData.tags && (
+        <div className="w-11/12 md:w-4/12">
+          <RelatedVideoContainer
+            tag={
+              videoData.tags[Math.floor(Math.random() * videoData.tags.length)]
+            }
+            videoId={Id}
+            channelId={videoData.channelId}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
 

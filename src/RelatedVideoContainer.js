@@ -21,12 +21,12 @@ const RelatedVideoContainer = ({channelId,tag,videoId}) => {
   if (relatedVideos.length === 0) return null;
 
     return (
-      <div>
-        <h1 className="ml-3 text-2xl font-extrabold">Related Videos</h1>
+      <div className="">
+        <h1 className="ml-3 my-2 md:my-0 text-2xl font-extrabold">Related Videos</h1>
 
         {relatedVideos.map((video) => {
             if (video.id.videoId !== videoId)
-            return <RelatedVideoCard key={video.etag} {...video} />;
+              return <RelatedVideoCard note={""} key={video.etag} {...video} />;
         })}
       </div>
     );

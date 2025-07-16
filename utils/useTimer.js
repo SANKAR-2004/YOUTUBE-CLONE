@@ -1,6 +1,7 @@
 
 const useTimer = (duration) => {
 
+    if (!duration) return;
     let timeTxt;
     const check = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
     let hours = parseInt(check[1] || 0);

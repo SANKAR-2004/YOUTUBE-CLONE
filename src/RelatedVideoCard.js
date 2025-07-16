@@ -3,7 +3,7 @@ import useChannelURL from "../utils/useChannelURL";
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
 
-const RelatedVideoCard = ({ snippet, id }) => {
+const RelatedVideoCard = ({ snippet, id ,note}) => {
   
   const { videoId } = id;
   const { channelId, channelTitle,title } = snippet;
@@ -17,12 +17,12 @@ const RelatedVideoCard = ({ snippet, id }) => {
     return (
       <Link to={"/watch?v=" + videoId + "&channelId=" + channelId}>
         <div
-          className={`cursor-pointer flex gap-2 shadow-lg border-b-2 border-gray-300 rounded-lg p-3 ${
+          className={`cursor-pointer ${(note === "search") ?" w-screen py-8 " :" w-full "} flex gap-2 shadow-lg border-b-2 border-gray-300 rounded-lg p-3 ${
             darkmode ? "bg-gray-700 text-white border-gray-400/70" : "bg-gray-50"
           }`}
         >
-          <img className="w-40 rounded-lg h-28" src={url} />
-          <div>
+          <img className={(note === "search" ? " h-40 w-48 ":" ")+"w-40 rounded-lg h-28"} src={url} />
+          <div className={(note === "search" ? "mt-3 ":" ") }>
             <p className="font-bold h-12 overflow-hidden">
               {title.length > 45 ? title.substr(0, 45) + "..." : title}
             </p>
